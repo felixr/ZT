@@ -1,9 +1,10 @@
 const gl = @import("gl");
 const std = @import("std");
 const zt = @import("../zt.zig");
+const builtin = @import("builtin");
 
 fn reportErr(msg: []const u8) void {
-    if (std.builtin.mode == .Debug) {
+    if (builtin.mode == .Debug) {
         var err = gl.glGetError();
         while (err != gl.GL_NO_ERROR) {
             switch (err) {

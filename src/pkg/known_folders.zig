@@ -1,5 +1,6 @@
 const std = @import("std");
 const root = @import("root");
+const builtin = @import("builtin");
 
 pub const KnownFolder = enum {
     home,
@@ -53,7 +54,7 @@ pub fn getPath(allocator: *std.mem.Allocator, folder: KnownFolder) Error!?[]cons
     var arena = std.heap.ArenaAllocator.init(allocator);
     defer arena.deinit();
 
-    switch (std.builtin.os.tag) {
+    switch (builtin.os.tag) {
         .windows => {
             const folder_spec = windows_folder_spec.get(folder);
 
@@ -146,7 +147,7 @@ fn getPathXdg(allocator: *std.mem.Allocator, arena: *std.heap.ArenaAllocator, fo
         _ = user_dirs.readAll(&read) catch null orelse break :block;
         const start = folder_spec.env.name.len + "=\"$HOME".len;
 
-        var line_it = std.mem.split(&read, "\n");
+        var line_it = std.mem.split(u8, &read, "\n");
         while (line_it.next()) |line| {
             if (std.mem.startsWith(u8, line, folder_spec.env.name)) {
                 const end = line.len - 1;
